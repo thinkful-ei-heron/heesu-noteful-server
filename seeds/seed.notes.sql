@@ -1,4 +1,4 @@
-INSERT INTO notes (name, modified, folderId, content)
+INSERT INTO notes (name, modified, folder_id, content)
 
 VALUES
   ('Dogs', '2019-01-03', 1, 'Amet dolorem eligendi minima ea saepe cum repudiandae et id'),
