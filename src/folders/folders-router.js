@@ -16,8 +16,8 @@ foldersRouter
   .get((req, res, next) => {
     const knexInstance = req.app.get('db')
     FoldersService.getAllFolders(knexInstance)
-      .then(folder => {
-        res.json(folder.map(serializeFolders))
+      .then(folders => {
+        res.json(folders.map(serializeFolders))
       })
       .catch(next)
   })
@@ -28,7 +28,7 @@ foldersRouter
     if(!name) {
       return res.status(400).json({
         error: { 
-          message: `Missing Folder Name`
+          message: `Missing Folder name`
         }
       });
     }
@@ -57,7 +57,7 @@ foldersRouter
         if (!folder) {
           return res.status(404).json({
             error: { 
-              message: `Folders doesn't exist` 
+              message: `Folder doesn't exist` 
             }
           })
         }
@@ -96,7 +96,7 @@ foldersRouter
       req.params.folder_id,
       folderToUpdate
     )
-      .then(numRowsAffected => {
+      .then(() => {
         res.status(204).end()
       })
       .catch(next)

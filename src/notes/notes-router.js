@@ -9,7 +9,7 @@ const serializeNote = note => ({
   id: note.id,
   name: xss(note.name),
   modified: note.modified,
-  folderId: note.folderId,
+  folder_id: note.folder_id,
   content: xss(note.content)
 });
 
@@ -18,14 +18,14 @@ notesRouter
   .get((req, res, next) => {
     const knexInstance = req.app.get('db')
     NotesService.getAllNotes(knexInstance)
-      .then(note => {
-        res.json(note.map(serializeNote))
+      .then(notes => {
+        res.json(notes.map(serializeNote))
       })
       .catch(next)
   })
   .post(jsonParser, (req, res, next) => {
-    const { name, modified, folderId, content } = req.body;
-    const newNote = { name, modified, folderId, content };
+    const { name, modified, folder_id, content } = req.body;
+    const newNote = { name, modified, folder_id, content };
 
     for (const [key, value] of Object.entries(newNote)) {
       if (value == null) {
@@ -80,16 +80,18 @@ notesRouter
       .catch(next)
   })
   .patch(jsonParser, (req, res, next) => {
-    const { name, modified, folderId, content } = req.body
-    const noteToUpdate = { name, modified, folderId, content }
+    const { name, modified, folder_id, content } = req.body
+    const noteToUpdate = { name, modified, folder_id, content }
 
     const numberOfValues = Object.values(noteToUpdate).filter(Boolean).length
     if (numberOfValues === 0)
       return res.status(400).json({
         error: {
-          message: `Request body must contain either 'name', 'modified', 'folderId', or 'content'`
+          message: `Request body must contain name, modified, folder_id, and content`
         }
       })
+
+      updateNote.modified = new Date();
 
     NotesService.updateNote(
       req.app.get('db'),
